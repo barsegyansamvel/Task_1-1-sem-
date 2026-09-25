@@ -3,6 +3,12 @@
 #include <stdlib.h>
 
 /*
+@brief Получает значение числа от пользователя
+@return Полученное число типа double, -1 в случае ошибки ввода
+*/
+double get_chislo();
+
+/*
 @brief Получает значение выбранного пользователем действия
 @return Полученное число (номер операции) типа int, -1 в случае ошибки ввода
 */
@@ -25,19 +31,11 @@ enum ActionType
 */
 int main(void)
 {
-    double a,b;
+    printf("Введите первый катет (a): ");
+    const double a = get_chislo();
 
-    printf("Vvedite perviy katet (a): ");
-    if (scanf("%lf", &a) != 1) {
-        printf("Oshibka vvoda chisla\n");
-        exit(EXIT_FAILURE);
-    }
-
-    printf("Vvedite vtoroy katet (b): ");
-    if (scanf("%lf", &b) != 1) {
-        printf("Oshibka vvoda chisla\n");
-        exit(EXIT_FAILURE);
-    }
+    printf("Введите второй катет (b): ");
+    const double b = get_chislo();
     
     const int deistvie = get_deistvie();
 
@@ -59,12 +57,22 @@ int main(void)
     return 0;
 }
 
+double get_chislo()
+{
+    double chislo;
+    if (scanf("%lf", &chislo) != 1) {
+        printf("Ошибка ввода числа!\n");
+        exit(EXIT_FAILURE);
+    }
+    return chislo;
+}
+
 int get_deistvie()
 {
     int deistvie;
     printf("\nVyberite deystvie:\n");
-    printf("1 - Vichislit' ploshad'\n");
-    printf("2 - Vichislit' perimetr\n");
+    printf("1 - Вычислить площадь\n");
+    printf("2 - Увеличить периметр");
     printf("Vash vybor: ");
     
     if (scanf("%d", &deistvie) != 1) {
