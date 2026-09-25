@@ -20,7 +20,7 @@ double get_ves(const double m);
 */
 int main(void)
 {
-    double m;
+    double m=0;
     printf("Vvedite massu meshka (kg): ");
     scanf("%lf", &m);
 
