@@ -24,12 +24,9 @@ int main(void)
     printf("Vvedite massu meshka (kg): ");
     scanf("%lf", &m);
 
-    const double sila_tyazh = get_sila_tyazh(m);
-    const double ves = get_ves(m);
-
     printf("\nRezultaty\n");
-    printf("Sila tyazhesti: %lf N\n", sila_tyazh);
-    printf("Ves meshka: %lf N\n", ves);
+    printf("Sila tyazhesti: %lf N\n", get_sila_tyazh(m));
+    printf("Ves meshka: %lf N\n", get_ves(m));
 
     return 0;
 }
