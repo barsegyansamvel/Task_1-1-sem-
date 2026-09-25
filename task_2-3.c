@@ -69,7 +69,7 @@ void vvod_otverstie(double* r, double* s)
     }
 }
 
-int fits(double a, double b, double r, double s)
+int proverka(const double a, const double b, const double r, const double s)
 {
     if ((a <= r && b <= s) || (a <= s && b <= r))
     {
