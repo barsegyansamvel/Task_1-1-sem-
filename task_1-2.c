@@ -28,18 +28,14 @@ double get_obyem(const double a);
 */
 int main(void)
 {
-    double a;
+    double a=0;
     printf("Vvedite dlinu rebra kuba (a): ");
     scanf("%lf", &a);
 
-    const double plosh_gran = get_plosh_gran(a);
-    const double plosh_poln_pov = get_plosh_poln_pov(a);
-    const double obyem = get_obyem(a);
-
     printf("\nRezultaty:\n");
-    printf("Ploshchad' grani: %.3lf\n", plosh_gran);
-    printf("Ploshchad' polnoy poverkhnosti: %.3lf\n", plosh_poln_pov);
-    printf("Ob'em: %.3lf\n", obyem);
+    printf("Ploshchad' grani: %.3lf\n", get_plosh_gran(a));
+    printf("Ploshchad' polnoy poverkhnosti: %.3lf\n", get_plosh_poln_pov(a));
+    printf("Ob'em: %.3lf\n", get_obyem(a));
 
     return 0;
 }
