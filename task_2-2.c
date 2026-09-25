@@ -3,21 +3,24 @@
 #include <stdlib.h>
 
 /*
+@brief Запрашивает у пользователя число и проверяет ввод
+@return Введенное число типа double
+*/
+double get_chislo();
+
+/*
 @brief Точка входа в программу
 @return 0 в случае успеха, -1 в случае ошибки ввода
 */
 int main(void)
 {
     const double a = 2;
-    double x;
 
     printf("Vvedite znachenie x: ");
-    if (scanf("%lf", &x) != 1) {
-        printf("Oshibka vvoda!\n");
-        return -1;
-    }
+    const double x = get_chislo();
 
-    double y;
+
+    double y=0;
 
     if (x < 1)
     {
@@ -41,4 +44,14 @@ int main(void)
     printf("y = %lf\n", y);
 
     return 0;
+}
+
+double get_chislo()
+{
+    double chislo = 0.0;
+    if (scanf("%lf", &chislo) != 1) {
+        printf("Oshibka vvoda chisla!\n");
+        exit(EXIT_FAILURE);
+    }
+    return chislo;
 }
