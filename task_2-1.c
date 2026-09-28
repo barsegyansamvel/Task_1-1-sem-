@@ -59,7 +59,7 @@ int main(void)
 
 double get_chislo()
 {
-    double chislo;
+    double chislo=0;
     if (scanf("%lf", &chislo) != 1) {
         printf("Ошибка ввода числа!\n");
         exit(EXIT_FAILURE);
@@ -69,10 +69,10 @@ double get_chislo()
 
 int get_deistvie()
 {
-    int deistvie;
+    int deistvie=0;
     printf("\nVyberite deystvie:\n");
-    printf("1 - Вычислить площадь\n");
-    printf("2 - Увеличить периметр");
+    printf("%d - Вычислить площадь\n", PLOSHAD);
+    printf("%d - Вычислить периметр\n", PERIMETR);
     printf("Vash vybor: ");
     
     if (scanf("%d", &deistvie) != 1) {
