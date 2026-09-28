@@ -31,14 +31,14 @@ int main(void)
     return 0;
 }
 
-const double g = 9.8;
-
 double get_sila_tyazh(const double m)
 {
+    const double g = 9.81;
     return m * g;
 }
 
 double get_ves(const double m)
 {
+    const double g = 9.81;
     return m * g;
 }
