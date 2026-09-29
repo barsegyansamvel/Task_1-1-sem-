@@ -87,7 +87,7 @@ double get_double() {
 double get_sum_n(const int n) {
   double current = 1;
   double result = current;
-  for (int i = 1; i < n; i++) {
+  for (int i = 0; i < n; i++) {
     current *= get_recurent(i);
     result += current;
   }
