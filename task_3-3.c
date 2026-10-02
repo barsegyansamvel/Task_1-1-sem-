@@ -17,6 +17,15 @@ double znach_f_e(const double x);
 double get_chislo();
 
 /**
+@brief Проверяет корректность введённых значений
+@param A Начало интервала
+@param B Конец интервала
+@param H Шаг
+@param epsilon Точность
+*/
+void check_input(const double A, const double B, const double H, const double epsilon);
+
+/**
 @brief Вычисляет сумму ряда с заданной точностью
 @param x Аргумент
 @param epsilon Точность вычисления
@@ -45,14 +54,16 @@ int main(void) {
   printf("Vvedite tochnost: \n");
   const double EPSILON = get_chislo();
 
+  check_input(A, B, H, EPSILON);
+
   printf("Interval: [%.2lf, %.2lf], shag: %.2lf, tochnost: %.4lf \n", A, B, H, EPSILON);
   printf("x\t\tf(x)\t\tS(x)\t\t \n");
 
-    const int n = (int)round((B - A) / H);
-    for (int k = 0; k <= n; k++) {
-        const double x = A + k * H;
-        printf("%.2lf\t\t%.4lf\t\t%.4lf\t\t \n", x, znach_f_e(x), sum_ryada(x, EPSILON));
-    }
+  const int n = (int)round((B - A) / H);
+  for (int k = 0; k <= n; k++) {
+    const double x = A + k * H;
+    printf("%.2lf\t\t%.4lf\t\t%.4lf\t\t \n", x, znach_f_e(x), sum_ryada(x, EPSILON));
+  }
 
   printf("\n");
   return 0;
@@ -62,12 +73,28 @@ double znach_f_e(const double x) {
   return exp(x);
 }
 
+void check_input(const double A, const double B, const double H, const double epsilon) {
+  if (A >= B) {
+    fprintf(stderr, "Oshibka: nachalo intervala dolzhno byt menshe konca.\n");
+    exit(1);
+  }
+  if (H <= 0) {
+    fprintf(stderr, "Oshibka: shag dolzhen byt polozhitelnym.\n");
+    exit(1);
+  }
+  if (epsilon <= 0) {
+    fprintf(stderr, "Oshibka: tochnost dolzhna byt polozhitelnoy.\n");
+    exit(1);
+  }
+}
+
 double sum_ryada(const double x, const double epsilon) {
-  double sum = 1.0;
+  double sum = 0.0;
   double current = 1.0;
-  for (int i = 1; fabs(current) > epsilon; i++) {
-    current *= get_n(i, x);
+
+  for (int i = 0; fabs(znach_f_e(x) - sum) > epsilon; i++) {
     sum += current;
+    current *= get_n(i + 1, x);
   }
   return sum;
 }
