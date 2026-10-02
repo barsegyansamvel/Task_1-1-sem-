@@ -94,7 +94,7 @@ double sum_ryada(const double x, const double epsilon) {
 
   for (int i = 0; fabs(znach_f_e(x) - sum) > epsilon; i++) {
     sum += current;
-    current *= get_n(i + 1, x);
+    current *= get_n(i, x);
   }
   return sum;
 }
