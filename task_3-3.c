@@ -74,7 +74,7 @@ double znach_f_e(const double x) {
 }
 
 void check_input(const double A, const double B, const double H, const double epsilon) {
-  if (A >= B) {
+  if (A > B) {
     fprintf(stderr, "Oshibka: nachalo intervala dolzhno byt menshe konca.\n");
     exit(1);
   }
