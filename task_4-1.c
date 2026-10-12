@@ -28,7 +28,7 @@ int get_value();
 @brief Проверяет массив на ошибку выделения памяти.
 @param ptr Массив, который проверяем.
 */
-void check_array(int *ptr);
+void check_array(const int *ptr);
 
 /**
 @brief Находит произведение элементов с чётным значением
@@ -36,14 +36,14 @@ void check_array(int *ptr);
 @param length Длина массива
 @return Возвращает произведение
 */
-long long product_even(int *ptr, const size_t length);
+long product_even(const int *ptr, const size_t length);
 
 /**
 @brief Выводит массив на экран
 @param ptr Массив
 @param length Длина массива
 */
-void print_arr(int *ptr, const size_t length);
+void print_arr(const int *ptr, const size_t length);
 
 /**
 @brief Заменяет элементы с нечётными номерами на квадраты их номеров
@@ -58,7 +58,7 @@ void replace_odd_indexes(int *ptr, const size_t length);
 @param length Длина массива
 @return 1, если есть; 0, если нет
 */
-int check_divisible(int *ptr, const size_t length);
+int check_divisible(const int *ptr, const size_t length);
 
 /**
 @brief Заполняет массив введёнными элементами.
@@ -150,7 +150,7 @@ int get_value() {
   return value;
 }
 
-void check_array(int *ptr) {
+void check_array(const int *ptr) {
   if (ptr == NULL) {
     fprintf(stderr, "Ошибка выделения памяти. \n");
     free(ptr);
@@ -158,7 +158,7 @@ void check_array(int *ptr) {
   }
 }
 
-long long product_even(int *ptr, const size_t length) {
+long product_even(const int *ptr, const size_t length) {
   check_array(ptr);
   long long product = 1;
   int found = 0;
@@ -174,7 +174,7 @@ long long product_even(int *ptr, const size_t length) {
   return product;
 }
 
-void print_arr(int *ptr, const size_t length) {
+void print_arr(const int *ptr, const size_t length) {
   check_array(ptr);
   printf("Массив:\n");
   for (size_t i = 0; i < length; i++) {
@@ -190,7 +190,7 @@ void replace_odd_indexes(int *ptr, const size_t length) {
   }
 }
 
-int check_divisible(int *ptr, const size_t length) {
+int check_divisible(const int *ptr, const size_t length) {
   check_array(ptr);
   printf("Введите число k: \n");
   int k = get_value();
