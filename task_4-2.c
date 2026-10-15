@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <time.h>
 
+#define MAX_LENGTH 1000
+
 /**
 @enum Для выбора операций.
 */
@@ -26,52 +28,47 @@ enum {
 int get_value();
 
 /**
-@brief Проверяет массив на ошибку выделения памяти.
-@param ptr Массив, который проверяем.
-*/
-void check_array(int *ptr);
-
-/**
 @brief Выводит массив на экран
-@param ptr Массив
+@param arr Массив
 @param length Длина массива
 */
-void print_arr(int *ptr, const size_t length);
+void print_arr(int arr[], const size_t length);
 
 /**
 @brief Заменяет предпоследний элемент на максимальный по модулю
-@param ptr Массив
+@param arr Массив
 @param length Длина массива
 */
-void replace_pre_last(int *ptr, const size_t length);
+void replace_pre_last(int arr[], const size_t length);
 
 /**
 @brief Вставляет элемент K до и после всех элементов, заканчивающихся на K
-@param ptr Указатель на массив
-@param length Указатель на длину массива (меняется!)
+@param arr Исходный массив
+@param length Длина массива
+@return Длина массива после вставки
 */
-void insert_k(int **ptr, size_t *length);
+size_t insert_k(int arr[], const size_t length);
 
 /**
 @brief Формирует массив A из массива D по правилу
-@param ptr_d Исходный массив
+@param arr_d Исходный массив
 @param length Длина массива
 */
-void form_array_a(int *ptr_d, const size_t length);
+void form_array_a(int arr_d[], const size_t length);
 
 /**
 @brief Заполняет массив введёнными элементами.
-@param ptr Массив, который заполняет.
+@param arr Массив, который заполняет.
 @param length Длина массива.
 */
-void scanf_arr(int *ptr, const size_t length);
+void scanf_arr(int arr[], const size_t length);
 
 /**
 @brief Заполняет массив случайными элементами из заданного промежутка.
-@param ptr Массив, который заполняет.
+@param arr Массив, который заполняет.
 @param length Длина массива.
 */
-void auto_arr(int *ptr, const size_t length);
+void auto_arr(int arr[], const size_t length);
 
 /**
 @brief Точка входа в программу.
@@ -81,10 +78,13 @@ int main(void) {
   setlocale(LC_ALL, "ru_RU.UTF-8");
 
   printf("Введите количество элементов массива: \n");
-  size_t length = (size_t)get_value();
-
-  int *ptr = malloc(sizeof(int) * length);
-  check_array(ptr);
+  int input_length = get_value();
+  if (input_length < 1 || input_length > MAX_LENGTH) {
+    fprintf(stderr, "Количество элементов должно быть от 1 до %d.\n", MAX_LENGTH);
+    return 1;
+  }
+  size_t length = (size_t)input_length;
+  int arr[MAX_LENGTH];
 
   printf("Выберите операцию: \n %d - Заполнить массив вручную. \n %d - "
          "Заполнить массив автоматически. \n",
@@ -92,19 +92,18 @@ int main(void) {
   int choise_one = get_value();
   switch (choise_one) {
   case arr_scanf:
-    scanf_arr(ptr, length);
+    scanf_arr(arr, length);
     break;
 
   case arr_auto:
-    auto_arr(ptr, length);
+    auto_arr(arr, length);
     break;
 
   default:
     fprintf(stderr, "Неверный выбор. \n");
-    free(ptr);
     exit(1);
   }
-  print_arr(ptr, length);
+  print_arr(arr, length);
 
   printf("Выберите действие: \n "
          "%d - Заменить предпоследний элемент на максимальный по модулю. \n"
@@ -114,26 +113,24 @@ int main(void) {
   int choise_two = get_value();
   switch (choise_two) {
   case operation_one:
-    replace_pre_last(ptr, length);
-    print_arr(ptr, length);
+    replace_pre_last(arr, length);
+    print_arr(arr, length);
     break;
 
   case operation_two:
-    insert_k(&ptr, &length);
-    print_arr(ptr, length);
+    length = insert_k(arr, length);
+    print_arr(arr, length);
     break;
 
   case operation_three:
-    form_array_a(ptr, length);
+    form_array_a(arr, length);
     break;
 
   default:
     fprintf(stderr, "Неверный выбор.\n");
-    free(ptr);
     exit(1);
   }
 
-  free(ptr);
   return 0;
 }
 
@@ -146,111 +143,99 @@ int get_value() {
   return value;
 }
 
-void check_array(int *ptr) {
-  if (ptr == NULL) {
-    fprintf(stderr, "Ошибка выделения памяти. \n");
-    free(ptr);
-    exit(1);
-  }
-}
-
-void print_arr(int *ptr, const size_t length) {
-  check_array(ptr);
+void print_arr(int arr[], const size_t length) {
   printf("Массив:\n");
   for (size_t i = 0; i < length; i++) {
-    printf(" %d", ptr[i]);
+    printf(" %d", arr[i]);
   }
   printf("\n");
 }
 
-void replace_pre_last(int *ptr, const size_t length) {
-  check_array(ptr);
+void replace_pre_last(int arr[], const size_t length) {
   if (length < 2) {
     fprintf(stderr, "Массив слишком мал.\n");
     return;
   }
-  int max_abs = abs(ptr[0]);
+  int max_abs = abs(arr[0]);
   for (size_t i = 1; i < length; i++) {
-    if (abs(ptr[i]) > max_abs) {
-      max_abs = abs(ptr[i]);
+    if (abs(arr[i]) > max_abs) {
+      max_abs = abs(arr[i]);
     }
   }
-  ptr[length - 2] = max_abs;
+  arr[length - 2] = max_abs;
 }
 
-void insert_k(int **ptr, size_t *length) {
-  check_array(*ptr);
+size_t insert_k(int arr[], const size_t length) {
   printf("Введите число K: \n");
   int k = get_value();
 
   size_t count = 0;
-  for (size_t i = 0; i < *length; i++) {
-    if (abs((*ptr)[i]) % 10 == abs(k) % 10) {
+  for (size_t i = 0; i < length; i++) {
+    if (abs(arr[i]) % 10 == abs(k) % 10) {
       count += 2;
     }
   }
 
   if (count == 0) {
     printf("Нет элементов, заканчивающихся на %d.\n", k);
-    return;
+    return length;
   }
 
-  size_t new_length = *length + count;
-  int *new_ptr = malloc(sizeof(int) * new_length);
-  check_array(new_ptr);
+  size_t new_length = length + count;
+  if (new_length > MAX_LENGTH) {
+    fprintf(stderr, "Недостаточно места: максимум %d элементов.\n", MAX_LENGTH);
+    return length;
+  }
+  int result[MAX_LENGTH];
 
   size_t j = 0;
-  for (size_t i = 0; i < *length; i++) {
-    if (abs((*ptr)[i]) % 10 == abs(k) % 10) {
-      new_ptr[j++] = k;
-      new_ptr[j++] = (*ptr)[i];
-      new_ptr[j++] = k;
+  for (size_t i = 0; i < length; i++) {
+    if (abs(arr[i]) % 10 == abs(k) % 10) {
+      result[j++] = k;
+      result[j++] = arr[i];
+      result[j++] = k;
     } else {
-      new_ptr[j++] = (*ptr)[i];
+      result[j++] = arr[i];
     }
   }
 
-  free(*ptr);
-  *ptr = new_ptr;
-  *length = new_length;
+  for (size_t i = 0; i < new_length; i++) {
+    arr[i] = result[i];
+  }
+  return new_length;
 }
 
-void form_array_a(int *ptr_d, const size_t length) {
-  check_array(ptr_d);
-  int *ptr_a = malloc(sizeof(int) * length);
-  check_array(ptr_a);
+void form_array_a(int arr_d[], const size_t length) {
+  int arr_a[MAX_LENGTH];
 
   for (size_t i = 0; i < length; i++) {
     if (i % 2 == 0) {
-      ptr_a[i] = (int)(i * ptr_d[i] * ptr_d[i]);
+      arr_a[i] = (int)(i * arr_d[i] * arr_d[i]);
     } else {
       if (i + 1 != 0) {
-        ptr_a[i] = (int)(ptr_d[i] / (i + 1));
+        arr_a[i] = (int)(arr_d[i] / (i + 1));
       } else {
-        ptr_a[i] = 0;
+        arr_a[i] = 0;
       }
     }
   }
 
   printf("Массив A:\n");
   for (size_t i = 0; i < length; i++) {
-    printf(" %d", ptr_a[i]);
+    printf(" %d", arr_a[i]);
   }
   printf("\n");
 
-  free(ptr_a);
 }
 
-void scanf_arr(int *ptr, const size_t length) {
-  check_array(ptr);
+void scanf_arr(int arr[], const size_t length) {
   printf("Введите последовательно элементы массива: \n");
   for (size_t i = 0; i < length; i++) {
-    ptr[i] = get_value();
+    arr[i] = get_value();
   }
 }
 
-void auto_arr(int *ptr, const size_t length) {
-  check_array(ptr);
+void auto_arr(int arr[], const size_t length) {
   printf("Введите минимальную границу массива: \n");
   int min = get_value();
   printf("Введите максимальную границу массива: \n");
@@ -258,12 +243,11 @@ void auto_arr(int *ptr, const size_t length) {
 
   if (min > max) {
     fprintf(stderr, "Минимальная граница больше максимальной. \n");
-    free(ptr);
     exit(1);
   }
 
   srand(time(NULL));
   for (size_t i = 0; i < length; i++) {
-    ptr[i] = rand() % (max - min + 1) + min;
+    arr[i] = rand() % (max - min + 1) + min;
   }
 }
