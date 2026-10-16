@@ -29,14 +29,14 @@ int get_value();
 @brief Проверяет массив на ошибку выделения памяти.
 @param ptr Массив, который проверяем.
 */
-void check_array(int *ptr);
+void check_array(const int *ptr);
 
 /**
 @brief Выводит массив на экран
 @param ptr Массив
 @param length Длина массива
 */
-void print_arr(int *ptr, const size_t length);
+void print_arr(const int *ptr, const size_t length);
 
 /**
 @brief Заменяет предпоследний элемент на максимальный по модулю
@@ -46,11 +46,22 @@ void print_arr(int *ptr, const size_t length);
 void replace_pre_last(int *ptr, const size_t length);
 
 /**
-@brief Вставляет элемент K до и после всех элементов, заканчивающихся на K
-@param ptr Указатель на массив
-@param length Указатель на длину массива (меняется!)
+@brief Вычисляет длину массива после вставки K.
+@param ptr Исходный массив.
+@param length Длина исходного массива.
+@param k Вставляемое число.
+@return Длина массива после вставки.
 */
-void insert_k(int **ptr, size_t *length);
+size_t get_inserted_length(const int *ptr, const size_t length, const int k);
+
+/**
+@brief Заполняет новый массив, вставляя K до и после подходящих элементов.
+@param ptr Исходный массив.
+@param length Длина исходного массива.
+@param k Вставляемое число.
+@param new_ptr Массив с памятью под get_inserted_length элементов.
+*/
+void insert_k(const int *ptr, const size_t length, const int k, int *new_ptr);
 
 /**
 @brief Формирует массив A из массива D по правилу
@@ -118,10 +129,23 @@ int main(void) {
     print_arr(ptr, length);
     break;
 
-  case operation_two:
-    insert_k(&ptr, &length);
+  case operation_two: {
+    printf("Введите число K: \n");
+    int k = get_value();
+    size_t new_length = get_inserted_length(ptr, length, k);
+    if (new_length == length) {
+      printf("Нет элементов, заканчивающихся на %d.\n", k);
+    } else {
+      int *new_ptr = malloc(sizeof(int) * new_length);
+      check_array(new_ptr);
+      insert_k(ptr, length, k, new_ptr);
+      free(ptr);
+      ptr = new_ptr;
+      length = new_length;
+    }
     print_arr(ptr, length);
     break;
+  }
 
   case operation_three:
     form_array_a(ptr, length);
@@ -146,15 +170,14 @@ int get_value() {
   return value;
 }
 
-void check_array(int *ptr) {
+void check_array(const int *ptr) {
   if (ptr == NULL) {
     fprintf(stderr, "Ошибка выделения памяти. \n");
-    free(ptr);
     exit(1);
   }
 }
 
-void print_arr(int *ptr, const size_t length) {
+void print_arr(const int *ptr, const size_t length) {
   check_array(ptr);
   printf("Массив:\n");
   for (size_t i = 0; i < length; i++) {
@@ -178,41 +201,30 @@ void replace_pre_last(int *ptr, const size_t length) {
   ptr[length - 2] = max_abs;
 }
 
-void insert_k(int **ptr, size_t *length) {
-  check_array(*ptr);
-  printf("Введите число K: \n");
-  int k = get_value();
-
+size_t get_inserted_length(const int *ptr, const size_t length, const int k) {
+  check_array(ptr);
   size_t count = 0;
-  for (size_t i = 0; i < *length; i++) {
-    if (abs((*ptr)[i]) % 10 == abs(k) % 10) {
+  for (size_t i = 0; i < length; i++) {
+    if (abs(ptr[i] % 10) == abs(k % 10)) {
       count += 2;
     }
   }
+  return length + count;
+}
 
-  if (count == 0) {
-    printf("Нет элементов, заканчивающихся на %d.\n", k);
-    return;
-  }
-
-  size_t new_length = *length + count;
-  int *new_ptr = malloc(sizeof(int) * new_length);
+void insert_k(const int *ptr, const size_t length, const int k, int *new_ptr) {
+  check_array(ptr);
   check_array(new_ptr);
-
   size_t j = 0;
-  for (size_t i = 0; i < *length; i++) {
-    if (abs((*ptr)[i]) % 10 == abs(k) % 10) {
+  for (size_t i = 0; i < length; i++) {
+    if (abs(ptr[i] % 10) == abs(k % 10)) {
       new_ptr[j++] = k;
-      new_ptr[j++] = (*ptr)[i];
+      new_ptr[j++] = ptr[i];
       new_ptr[j++] = k;
     } else {
-      new_ptr[j++] = (*ptr)[i];
+      new_ptr[j++] = ptr[i];
     }
   }
-
-  free(*ptr);
-  *ptr = new_ptr;
-  *length = new_length;
 }
 
 void form_array_a(int *ptr_d, const size_t length) {
