@@ -25,10 +25,10 @@ enum {
 int get_value(void);
 
 /**
-@brief Проверяет строку массива на ошибку выделения памяти.
-@param ptr Строка, которую проверяем.
+@brief Проверяет указатель на NULL.
+@param ptr Указатель на массив или его строку.
 */
-void check_array(const int *ptr);
+void check_array(const void *ptr);
 
 /**
 @brief Выделяет память под двумерный массив.
@@ -160,7 +160,7 @@ int get_value(void) {
   return value;
 }
 
-void check_array(const int *ptr) {
+void check_array(const void *ptr) {
   if (ptr == NULL) {
     fprintf(stderr, "Ошибка выделения памяти.\n");
     exit(1);
@@ -188,6 +188,7 @@ int **create_arr(const size_t rows, const size_t columns) {
 }
 
 void free_arr(int **ptr, const size_t rows) {
+  check_array(ptr);
   for (size_t i = 0; i < rows; i++) {
     free(ptr[i]);
   }
@@ -195,6 +196,7 @@ void free_arr(int **ptr, const size_t rows) {
 }
 
 void print_arr(int *const *ptr, const size_t rows, const size_t columns) {
+  check_array(ptr);
   if (columns == 0) {
     printf("Все столбцы удалены.\n");
     return;
@@ -210,6 +212,10 @@ void print_arr(int *const *ptr, const size_t rows, const size_t columns) {
 }
 
 void replace_min(int **ptr, const size_t rows, const size_t columns) {
+  check_array(ptr);
+  for (size_t i = 0; i < rows; i++) {
+    check_array(ptr[i]);
+  }
   for (size_t j = 0; j < columns; j++) {
     size_t min_index = 0;
     long long min_abs = llabs((long long)ptr[0][j]);
@@ -225,6 +231,10 @@ void replace_min(int **ptr, const size_t rows, const size_t columns) {
 }
 
 size_t delete_columns(int **ptr, const size_t rows, const size_t columns) {
+  check_array(ptr);
+  for (size_t i = 0; i < rows; i++) {
+    check_array(ptr[i]);
+  }
   size_t new_columns = 0;
   for (size_t j = 0; j < columns; j++) {
     if (ptr[0][j] <= ptr[rows - 1][j]) {
@@ -238,8 +248,10 @@ size_t delete_columns(int **ptr, const size_t rows, const size_t columns) {
 }
 
 void scanf_arr(int **ptr, const size_t rows, const size_t columns) {
+  check_array(ptr);
   printf("Введите элементы массива по строкам:\n");
   for (size_t i = 0; i < rows; i++) {
+    check_array(ptr[i]);
     for (size_t j = 0; j < columns; j++) {
       ptr[i][j] = get_value();
     }
@@ -247,6 +259,7 @@ void scanf_arr(int **ptr, const size_t rows, const size_t columns) {
 }
 
 void auto_arr(int **ptr, const size_t rows, const size_t columns) {
+  check_array(ptr);
   printf("Введите минимальную границу массива: \n");
   int min = get_value();
   printf("Введите максимальную границу массива: \n");
@@ -260,6 +273,7 @@ void auto_arr(int **ptr, const size_t rows, const size_t columns) {
   srand((unsigned int)time(NULL));
   long long range = (long long)max - min + 1;
   for (size_t i = 0; i < rows; i++) {
+    check_array(ptr[i]);
     for (size_t j = 0; j < columns; j++) {
       ptr[i][j] = (int)(rand() % range + min);
     }
